@@ -8,8 +8,11 @@ use App\Models\Country;
 class SiteController extends Controller
 {
     public function index() {
-        $countries = Country::first();
-        dd($countries);
+        $countries = Country::all();
+        // dd($countries->cities()->first());
         return view('index', compact('countries'));
+    }
+    public function getCitiesByCountryCode(Request $request) {
+        dd($request->all());
     }
 }
