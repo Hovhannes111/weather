@@ -9,10 +9,10 @@ class SiteController extends Controller
 {
     public function index() {
         $countries = Country::all();
-        // dd($countries->cities()->first());
         return view('index', compact('countries'));
     }
-    public function getCitiesByCountryCode(Request $request) {
-        dd($request->all());
+    public function getCitiesByCountry($countryId) {
+        $cities = Country::find($countryId)->cities()->groupBy('name')->get();
+        return response()->json($cities);
     }
 }
