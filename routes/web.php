@@ -15,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\SiteController::class, 'index']);
 Route::get('/getCitiesByCountry/{countryId}', [App\Http\Controllers\SiteController::class, 'getCitiesByCountry']);
-Route::get('/weather/{cityId}', [App\Http\Controllers\WeatherController::class, 'getWeather']);
+Route::post('/getWeather', [App\Http\Controllers\WeatherController::class, 'getWeather']);
