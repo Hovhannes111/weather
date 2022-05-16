@@ -4,21 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\State;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 
 class SiteController extends Controller
 {
-    public function index() {
+    /**
+     * @return View
+     */
+    public function index():View
+    {
         $countries = Country::all();
         return view('index', compact('countries'));
     }
-    
-    public function getStatesByCountry($countryId) {
-        $states = Country::find($countryId)->states()->get();
+
+    /**
+     * @param Country $country
+     * @return JsonResponse
+     */
+    public function getStatesByCountry(Country $country): JsonResponse
+    {
+        $states = $country->states()->get();
         return response()->json($states);
     }
 
-    public function getCitiesByState($stateId) {
-        $cities = State::find($stateId)->cities()->get();
+    /**
+     * @param State $state
+     * @return JsonResponse
+     */
+    public function getCitiesByState(State $state): JsonResponse
+    {
+        $cities = $state->cities()->get();
         return response()->json($cities);
     }
 }
