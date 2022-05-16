@@ -120,17 +120,16 @@
                 }
             });
             let data = new Object()
+            let elem
             if($('#city').find('option').length){
-                data.latitude = $('#city').find(":selected").attr("data-lat")
-                data.longitude = $('#city').find(":selected").attr("data-lon")
-
+                elem = $('#city')
             } else if(!$('#city').find('option').length && $('#state').find('option').length) {
-                data.latitude = $('#state').find(":selected").attr("data-lat")
-                data.longitude = $('#state').find(":selected").attr("data-lon")
+                elem = $('#state')
             } else {
-                data.latitude = $('#country').find(":selected").attr("data-lat")
-                data.longitude = $('#country').find(":selected").attr("data-lon")
+                elem = $('#country')
             }
+            data.latitude = elem.find(":selected").attr("data-lat")
+            data.longitude = elem.find(":selected").attr("data-lon")
             e.preventDefault();
             $.ajax({
                 type:'POST',
