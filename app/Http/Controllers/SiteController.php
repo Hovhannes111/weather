@@ -11,7 +11,7 @@ class SiteController extends Controller
 {
     /**
      * @return View
-     */
+    */ 
     public function index():View
     {
         $countries = Country::all();
@@ -22,9 +22,9 @@ class SiteController extends Controller
      * @param Country $country
      * @return JsonResponse
      */
-    public function getStatesByCountry(Country $country): JsonResponse
+    public function getStatesByCountry(Country $country, $countryId): JsonResponse
     {
-        $states = $country->states()->get();
+        $states = $country->find($countryId)->states()->get();;
         return response()->json($states);
     }
 
@@ -32,9 +32,9 @@ class SiteController extends Controller
      * @param State $state
      * @return JsonResponse
      */
-    public function getCitiesByState(State $state): JsonResponse
+    public function getCitiesByState(State $state, $stateId): JsonResponse
     {
-        $cities = $state->cities()->get();
+        $cities = $state->find($stateId)->cities()->get();
         return response()->json($cities);
     }
 }

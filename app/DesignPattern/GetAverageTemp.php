@@ -4,8 +4,12 @@ namespace App\DesignPattern;
 
 class GetAverageTemp implements AverageTempInterface
 {
-    public function avarageWeather ($firstTemp, $secondTemp) {
-        $averageTemp = number_format(($firstTemp + $secondTemp) / 2, 1); 
-        return (int)$averageTemp;
+    /**
+    * @return int
+    */
+    public function avarageWeather ($openWeatherMap, $weatherbit): int
+    {
+        $averageTemp = number_format(($openWeatherMap + $weatherbit) / 2, 1); 
+        return (int) $averageTemp;
     }
 }

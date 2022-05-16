@@ -2,26 +2,22 @@
 
 namespace App\DesignPattern;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
-class SecondTemp
+class OpenWeatherMap 
 {
-    private array $location;
+    private object $location;
 
-    private string $url = 'https://api.weatherbit.io/v2.0/';
-
-    /**
-     * @param array $location
-     */
-    public function __construct(array $location)
-    {
-        $this->location = $location;
-    }
+    private string $url = 'https://api.openweathermap.org/data/2.5/';
 
     /**
+     * @param object $location
+     * 
      * @return int
      */
-    public function execute(): int
+    public function execute(object $location): int
     {
+        $this->location = $location;
         $this->setResult();
         return $this->getTemp();
     }
@@ -33,7 +29,7 @@ class SecondTemp
      */
     private function getRequestUri(): string
     {
-        return $this->url .'current?lat' . $this->location->latitude."&lon=" . $this->location->longitude."&key=".env('WEATHERBIT_KEY')."&include=minutely";
+        return $this->url .'weather?lat=' . $this->location->latitude."&lon=" . $this->location->longitude."&appid=".env('OPENWEATHERMAP_KEY')."&units=metric";
     }
 
     /**
@@ -41,7 +37,7 @@ class SecondTemp
      */
     private function getTemp(): int
     {
-        return (int) json_decode($this->result->body())->data[0]->temp;
+        return (int) json_decode($this->result->body())->main->temp;
     }
 
     /**
@@ -52,7 +48,7 @@ class SecondTemp
         try {
             $this->result = Http::get($this->getRequestUri());
         } catch (\Exception $e) {
-            // TODO create log
+            Log::channel('errorException')->info($e);
         }
     }
 }

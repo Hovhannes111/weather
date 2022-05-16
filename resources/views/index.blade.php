@@ -7,7 +7,12 @@
             <select name="country" id="country" class="form-select mt-3">
                 <option value="" data-id="0">Please select your country</option>
                 @foreach($countries as $country)
-                    <option value="{{ $country->name }}" data-id={{ $country->id }}>{{ $country->name }}</option>
+                    <option 
+                        value="{{ $country->name }}"
+                        data-id={{ $country->id }}
+                        data-lat={{ $country->latitude }}
+                        data-lon={{ $country->longitude }}
+                    >{{ $country->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -39,7 +44,12 @@
                             let html = '<option value="0" data-id="0">Please select your state</option>'
                             for (let i = 0; i < res.length; i++) {
                                 let value = res[i]
-                                html += `<option value=${value.name} data-id=${value.id}>${value.name}</option>`
+                                html += `<option 
+                                            value=${value.name}
+                                            data-id=${value.id}
+                                            data-lat=${value.latitude}
+                                            data-lon=${value.longitude}
+                                        >${value.name}</option>`
                             }
                             $('#state').append(html)
                         } else {
@@ -71,7 +81,12 @@
                             let html = '<option value="0" data-id="0">Please select your ciry</option>'
                             for (let j = 0; j < res.length; j++) {
                                 let value = res[j]
-                                html += `<option value=${value.name} data-id=${value.id}>${value.name}</option>`
+                                html += `<option 
+                                            value=${value.name}
+                                            data-id=${value.id}
+                                            data-lat=${value.latitude}
+                                            data-lon=${value.longitude}    
+                                        >${value.name}</option>`
                             }
                             $('#city').append(html)
                             $("#city").on('change', function() {
@@ -103,11 +118,15 @@
             });
             let data = new Object()
             if($('#city').find('option').length){
-                data.cityId = $('#city').find(":selected").attr("data-id")
+                data.latitude = $('#city').find(":selected").attr("data-lat")
+                data.longitude = $('#city').find(":selected").attr("data-lon")
+
             } else if(!$('#city').find('option').length && $('#state').find('option').length) {
-                data.stateId = $('#state').find(":selected").attr("data-id")
+                data.latitude = $('#state').find(":selected").attr("data-lat")
+                data.longitude = $('#state').find(":selected").attr("data-lon")
             } else {
-                data.countryId = $('#country').find(":selected").attr("data-id") 
+                data.latitude = $('#country').find(":selected").attr("data-lat")
+                data.longitude = $('#country').find(":selected").attr("data-lon")
             }
             e.preventDefault();
             $.ajax({
