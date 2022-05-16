@@ -30,6 +30,9 @@
 
     <script>
         $("#country").on('change', function() {
+            if($('.button:not(d-none)')) {
+                $("button").addClass("d-none")
+            }
             let selectedCountry = +$(this).find(":selected").attr("data-id")
             if(selectedCountry) {
                 $.ajax({
