@@ -5,10 +5,9 @@ use Illuminate\Support\Facades\Http;
 
 class SecondTemp
 {
-
     private array $location;
 
-    private $url = 'https://api.weatherbit.io/v2.0/current?lat';
+    private string $url = 'https://api.weatherbit.io/v2.0/';
 
     /**
      * @param array $location
@@ -34,7 +33,7 @@ class SecondTemp
      */
     private function getRequestUri(): string
     {
-        return $this->url . $this->location->latitude."&lon=" . $this->location->longitude."&key=".env('WEATHERBIT_KEY')."&include=minutely";
+        return $this->url .'current?lat' . $this->location->latitude."&lon=" . $this->location->longitude."&key=".env('WEATHERBIT_KEY')."&include=minutely";
     }
 
     /**
