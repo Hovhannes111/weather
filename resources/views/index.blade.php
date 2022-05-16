@@ -11,6 +11,11 @@
                 @endforeach
             </select>
         </div>
+        <div  id="state-section" class="mt-3 d-none">
+            <p>Choose a state:</p>
+            <select name="state" id="state" class="form-select mt-3"></select>
+        </div>
+        
         <div id="city-section" class="mt-3 d-none">
             <p>Choose a city:</p>
             <select name="city" id="city" class="form-select mt-3"></select>
@@ -24,18 +29,53 @@
             if(selectedCountry) {
                 $.ajax({
                     type:'GET',
-                    url:'/getCitiesByCountry/'+selectedCountry,
+                    url:'/getStatesByCountry/'+selectedCountry,
                     success:function(res) {
                         if(res.length !== 0){
-                            $("#city-section").removeClass("d-none")
-                            let html = '<option value="0" data-id="0">Please select your country</option>'
-                            for (var i = 0; i < res.length; i++) {
+                            if($('.button:not(d-none)')) {
+                                $("button").addClass("d-none")
+                            }
+                            $("#state-section").removeClass("d-none")
+                            let html = '<option value="0" data-id="0">Please select your state</option>'
+                            for (let i = 0; i < res.length; i++) {
                                 let value = res[i]
+                                html += `<option value=${value.name} data-id=${value.id}>${value.name}</option>`
+                            }
+                            $('#state').append(html)
+                        } else {
+                            $("#state-section").addClass("d-none")
+                            $("button").removeClass("d-none")
+                        }
+                    }
+                })
+            } else {
+                $("#state-section").addClass("d-none")
+            }
+            $("#city-section").addClass("d-none")
+            $('#city').find('option').remove().end()
+            $('#state').find('option').remove().end()
+        })
+
+        $("#state").on('change', function() {
+            let selectedState = +$('#state').find(":selected").attr("data-id")
+            if(selectedState !== 0) {
+                $.ajax({
+                    type:'GET',
+                    url:'/getCitiesByState/'+selectedState,
+                    success:function(res) {
+                        if(res.length !== 0){
+                            if($('.button:not(d-none)')) {
+                                $("button").addClass("d-none")
+                            }
+                            $("#city-section").removeClass("d-none")
+                            let html = '<option value="0" data-id="0">Please select your ciry</option>'
+                            for (let j = 0; j < res.length; j++) {
+                                let value = res[j]
                                 html += `<option value=${value.name} data-id=${value.id}>${value.name}</option>`
                             }
                             $('#city').append(html)
                             $("#city").on('change', function() {
-                                if($('#city').find(":selected").attr("data-id") !== 0) {
+                                if(+$('#city').find(":selected").attr("data-id") !== 0) {
                                     $("button").removeClass("d-none")
                                 } else {
                                     if($('.button:not(d-none)')) {
@@ -43,7 +83,6 @@
                                     }
                                 }
                             })
-
                         } else {
                             $("#city-section").addClass("d-none")
                             $("button").removeClass("d-none")
@@ -52,10 +91,10 @@
                 })
             } else {
                 $("#city-section").addClass("d-none")
-                $("button").addClass("d-none")
             }
             $('#city').find('option').remove().end()
         })
+
         $("#submit").click(function(e) {
             $.ajaxSetup({
                 headers: {
@@ -63,8 +102,10 @@
                 }
             });
             let data = new Object()
-            if($('#city').find('option').value){
+            if($('#city').find('option').length){
                 data.cityId = $('#city').find(":selected").attr("data-id")
+            } else if(!$('#city').find('option').length && $('#state').find('option').length) {
+                data.stateId = $('#state').find(":selected").attr("data-id")
             } else {
                 data.countryId = $('#country').find(":selected").attr("data-id") 
             }
@@ -74,7 +115,8 @@
                 url:"/getWeather",
                 data,
                 success:function(data){
-                    $('.container').append(`<h1 class="mt-3">${data} °C</h1>`)
+                    $('.weather').remove()
+                    $('.container').append(`<h1 class="weather mt-3">${data} °C</h1>`)
                 }
             });
         })

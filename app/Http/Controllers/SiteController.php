@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Country;
+use App\Models\State;
 
 class SiteController extends Controller
 {
@@ -11,8 +11,14 @@ class SiteController extends Controller
         $countries = Country::all();
         return view('index', compact('countries'));
     }
-    public function getCitiesByCountry($countryId) {
-        $cities = Country::find($countryId)->cities()->groupBy('name')->get();
+    
+    public function getStatesByCountry($countryId) {
+        $states = Country::find($countryId)->states()->get();
+        return response()->json($states);
+    }
+
+    public function getCitiesByState($stateId) {
+        $cities = State::find($stateId)->cities()->get();
         return response()->json($cities);
     }
 }
