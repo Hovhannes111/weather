@@ -28,12 +28,12 @@ class WeatherController extends Controller
     */
     public function getWeather(Request $request): JsonResponse
     {
-        if(Cache::get('weather_id')) {
-            $weather_id = Cache::get('weather_id');
-            $data = Weather::findOrFail($weather_id);
+        if(Cache::get('weather_latitude') && Cache::get('weather_longitude')) {
+            $weather_latitude = Cache::get('weather_latitude');
+            $weather_longitude = Cache::get('weather_longitude');
+            $data = Weather::where('latitude', $weather_latitude)->where('longitude', $weather_longitude)->first();
             $result = $data->temp;
         } else {
-            Cache::pull('weather_id');
             $expires_at = Carbon::now()->addHour(1)->format('Y-m-d H:i:s'); 
             $data = new stdClass;
             $data->latitude = $request->latitude;
@@ -49,7 +49,8 @@ class WeatherController extends Controller
                 'expires_at' => $expires_at
             ]);
             $temp->save;
-            Cache::add('weather_id', $temp->id, $this->seconds);
+            Cache::add('weather_latitude', $temp->latitude, $this->seconds);
+            Cache::add('weather_longitude', $temp->longitude, $this->seconds);
         }
         return response()->json($result);
     }
