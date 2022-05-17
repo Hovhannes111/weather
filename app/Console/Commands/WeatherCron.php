@@ -41,6 +41,7 @@ class WeatherCron extends Command
                     $weather->latitude == Cache::get('weather_latitude') &&
                     $weather->longitude == Cache::get('weather_longitude')
                 ){
+                    Cache::pull('weather_temp');
                     Cache::pull('weather_latitude');
                     Cache::pull('weather_longitude');
                 }
