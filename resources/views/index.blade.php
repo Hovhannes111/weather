@@ -123,10 +123,16 @@
             let elem
             if($('#city').find('option').length){
                 elem = $('#city')
+                data.city_id = elem.find(":selected").attr("data-id")
+                data.state_id = $('#state').find(":selected").attr("data-id")
+                data.country_id = $('#country').find(":selected").attr("data-id")
             } else if(!$('#city').find('option').length && $('#state').find('option').length) {
                 elem = $('#state')
+                data.state_id = elem.find(":selected").attr("data-id")
+                data.country_id = $('#country').find(":selected").attr("data-id")
             } else {
                 elem = $('#country')
+                data.country_id = elem.find(":selected").attr("data-id")
             }
             data.latitude = elem.find(":selected").attr("data-lat")
             data.longitude = elem.find(":selected").attr("data-lon")

@@ -2,7 +2,7 @@
 
 namespace App\DesignPattern;
 
-class Weather 
+class GetWeather 
 {
     /**
      * @var OpenWeatherMap
