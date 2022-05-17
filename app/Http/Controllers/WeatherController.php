@@ -16,7 +16,7 @@ class WeatherController extends Controller
      * @var GetWeather
     */
     protected $getWeather;
-    protected $seconds = 3600;
+    protected $expiresAt = 3600;
 
     public function __construct(GetWeather $getWeather)
     {
@@ -28,18 +28,25 @@ class WeatherController extends Controller
     */
     public function getWeather(Request $request): JsonResponse
     {
-        if(Cache::get('weather_latitude') && Cache::get('weather_longitude')) {
+        if( Cache::get('weather_latitude') && 
+            Cache::get('weather_longitude') && 
+            Cache::get('weather_latitude') == $request->latitude &&
+            Cache::get('weather_longitude') == $request->longitude)
+        {
             $weather_latitude = Cache::get('weather_latitude');
             $weather_longitude = Cache::get('weather_longitude');
             $data = Weather::where('latitude', $weather_latitude)->where('longitude', $weather_longitude)->first();
             $result = $data->temp;
         } else {
-            $expires_at = Carbon::now()->addHour(1)->format('Y-m-d H:i:s'); 
+            if($weather = Weather::where('latitude', $request->latitude)->where('longitude', $request->longitude)->first()) {
+                return response()->json($weather->temp);
+            }
+            $expires_at = Carbon::now()->addHour(1)->format('Y-m-d H:i:s');
             $data = new stdClass;
             $data->latitude = $request->latitude;
             $data->longitude = $request->longitude;
             $result = $this->getWeather->getResult($data);
-            $temp = Weather::firstOrCreate([
+            $temp = Weather::updateOrCreate([
                 'country_id' => $request->country_id,
                 'state_id'   => $request->state_id ?? null,
                 'city_id'    => $request->city_id ?? null,
@@ -49,8 +56,8 @@ class WeatherController extends Controller
                 'expires_at' => $expires_at
             ]);
             $temp->save;
-            Cache::add('weather_latitude', $temp->latitude, $this->seconds);
-            Cache::add('weather_longitude', $temp->longitude, $this->seconds);
+            Cache::put('weather_latitude', $temp->latitude, $this->expiresAt);
+            Cache::put('weather_longitude', $temp->longitude, $this->expiresAt);
         }
         return response()->json($result);
     }
