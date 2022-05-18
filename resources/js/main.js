@@ -7,7 +7,7 @@ $(document).ready(function() {
         if (selectedCountry) {
             $.ajax({
                 type: 'GET',
-                url: '/getStatesByCountry/' + selectedCountry,
+                url: '/states/' + selectedCountry,
                 success: function(res) {
                     if (res.length !== 0) {
                         if ($('.button:not(d-none)')) {
@@ -17,7 +17,7 @@ $(document).ready(function() {
                         let html = '<option value="0" data-id="0">Please select your state</option>'
                         for (let i = 0; i < res.length; i++) {
                             let value = res[i]
-                            html += `<option 
+                            html += `<option
                                         value=${value.name}
                                         data-id=${value.id}
                                         data-lat=${value.latitude}
@@ -54,11 +54,11 @@ $(document).ready(function() {
                         let html = '<option value="0" data-id="0">Please select your ciry</option>'
                         for (let j = 0; j < res.length; j++) {
                             let value = res[j]
-                            html += `<option 
+                            html += `<option
                                         value=${value.name}
                                         data-id=${value.id}
                                         data-lat=${value.latitude}
-                                        data-lon=${value.longitude}    
+                                        data-lon=${value.longitude}
                                     >${value.name}</option>`
                         }
                         $('#city').append(html)

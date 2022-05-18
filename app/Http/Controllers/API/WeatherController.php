@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\DesignPattern\GetWeather;
+use App\Http\Controllers\Controller;
 use App\Models\Weather;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use stdClass;
 
@@ -24,22 +25,34 @@ class WeatherController extends Controller
     }
 
     /**
+     * Get temp for location.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function show(Request $request): JsonResponse
+    {
+        $result = [];
+        return response()->json($result);
+    }
+
+    /**
     * @return JsonResponse
     */
     public function getWeather(Request $request): JsonResponse
     {
-        if( Cache::get('weather_latitude') && 
-            Cache::get('weather_longitude') && 
+        if( Cache::get('weather_latitude') &&
+            Cache::get('weather_longitude') &&
             Cache::get('weather_latitude') == $request->latitude &&
             Cache::get('weather_longitude') == $request->longitude)
         {
             $result = Cache::get('weather_temp');
-        } 
+        }
         elseif($weather = Weather::where('latitude', $request->latitude)->where('longitude', $request->longitude)->first())
         {
             $result = $weather->temp;
-        } 
-        else 
+        }
+        else
         {
             $expires_at = Carbon::now()->addHour(1)->format('Y-m-d H:i:s');
             $data = new stdClass;

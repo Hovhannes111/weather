@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\API\{
+    LocationController,
+    WeatherController
+};
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,7 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\SiteController::class, 'index']);
-Route::get('/getStatesByCountry/{countryId}', [App\Http\Controllers\SiteController::class, 'getStatesByCountry']);
-Route::get('/getCitiesByState/{stateId}', [App\Http\Controllers\SiteController::class, 'getCitiesByState']);
-Route::post('/getWeather', [App\Http\Controllers\WeatherController::class, 'getWeather']);
+Route::get('/', fn() => view('index'));
+
+// API routes
+Route::middleware(['api'])->group(function () {
+    // LocationController routes
+    Route::get('/countries/', [LocationController::class, 'countries']);
+    Route::get('/states/{country}', [LocationController::class, 'states']);
+    Route::get('/cities/state/{state}', [LocationController::class, 'citiesByState']);
+    Route::get('/cities/country/{country}', [LocationController::class, 'citiesByCountry']);
+
+    // WeatherController routes
+    Route::post('/weather', [WeatherController::class, 'show']);
+});
