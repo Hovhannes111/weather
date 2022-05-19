@@ -16,15 +16,13 @@ use App\Http\Controllers\API\{
 |
 */
 
-Route::get('/', fn() => view('index'));
+Route::get('/', fn() => view('index', ['countries' => \App\Models\Country::all()]));
 
 // API routes
 Route::middleware(['api'])->group(function () {
     // LocationController routes
-    Route::get('/countries/', [LocationController::class, 'countries']);
-    Route::get('/states/{country}', [LocationController::class, 'states']);
-    Route::get('/cities/state/{state}', [LocationController::class, 'citiesByState']);
-    Route::get('/cities/country/{country}', [LocationController::class, 'citiesByCountry']);
+    Route::get('/country/{country}', [LocationController::class, 'country']);
+    Route::get('/state/{state}', [LocationController::class, 'state']);
 
     // WeatherController routes
     Route::post('/weather', [WeatherController::class, 'show']);

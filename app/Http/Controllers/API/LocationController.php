@@ -3,55 +3,31 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CityResource;
-use App\Http\Resources\CountryResource;
-use App\Http\Resources\StateResource;
+use App\Http\Resources\LocationCountryResource;
+use App\Http\Resources\LocationStateResource;
 use App\Models\Country;
 use App\Models\State;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LocationController extends Controller
 {
     /**
-     * Get countries list
-     *
-     * @return AnonymousResourceCollection
+     * @param Country $country
+     * @return LocationCountryResource
      */
-    public function countries(): AnonymousResourceCollection
+    public function country(Country $country): LocationCountryResource
     {
-        return CountryResource::collection(Country::all());
+        return New LocationCountryResource($country);
     }
+
 
     /**
      * Get states related to country.
      *
-     * @param Country $country
-     * @return AnonymousResourceCollection
-     */
-    public function states(Country $country): AnonymousResourceCollection
-    {
-        return StateResource::collection($country->states()->get());
-    }
-
-    /**
-     * Get cities related to state.
-     *
      * @param State $state
-     * @return AnonymousResourceCollection
+     * @return LocationStateResource
      */
-    public function citiesByState(State $state): AnonymousResourceCollection
+    public function state(State $state): LocationStateResource
     {
-        return CityResource::collection($state->cities()->get());
-    }
-
-    /**
-     * Get cities related to state.
-     *
-     * @param Country $country
-     * @return AnonymousResourceCollection
-     */
-    public function citiesByCountry(Country $country): AnonymousResourceCollection
-    {
-        return CityResource::collection($country->cities()->get());
+        return New LocationStateResource($state);
     }
 }

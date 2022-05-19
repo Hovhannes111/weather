@@ -6,57 +6,46 @@ import 'jquery-ui/ui/widgets/datepicker.js';
 
 import LocationAPI from "./api/LoactonAPI";
 import WeatherAPI from "./api/WeatherAPi";
-import Select from "./Select";
+import FControl from "./FControl";
 
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 
 $(document).ready(function() {
 
-    const $countrySelect = $('#country');
-    const $stateSelect = $('#state');
-    const $citySelect = $('#city');
+    const $selects = {
+        'countries': $('#country'),
+        'states': $('#state'),
+        'cities': $('#city')
+    };
+    const $temperature = $('#temperature')
 
-    LocationAPI.getCountries((res) => {
-        Select.appendOptions($countrySelect, res.data)
-    });
-
-    function initData (data, $el) {
-        if (data.length) {
-            Select.show($el)
-            Select.appendOptions($el, data)
-        } else {
-            Select.hide($el)
-            return false;
+    const locationDataPrepare = (res) => {
+        const type = Object.keys(res.data)[0];
+        switch (type) {
+            case 'location':
+                getTemperature(res.data[type]);
+                break;
+            default:
+                FControl.appendSelectOptions($selects[type], res.data[type]);
+                FControl.show($selects[type]);
         }
     }
 
-    function countrySelectProcessing () {
-        LocationAPI.getStates(this.value,(res) => {
-            if(!initData(res.data, $stateSelect)) {
-                LocationAPI.getStateCities(this.value, (res) => {
-                    if(!initData(res.data, $citySelect)) {
-
-                    }
-                })
-            }
-        })
-    }
-
-    function stateSelectProcessing () {
-        LocationAPI.getStateCities(this.value, res => {
-            if (res.data.length) {
-                Select.show($citySelect)
-                Select.appendOptions($citySelect, res.data)
-            } else {
-                Select.hide($citySelect)
-                LocationAPI.getStateCities(this.value, (res) => {
-                    Select.appendOptions($citySelect, res.data)
-                })
-            }
-        })
+    const getTemperature = (data) => {
+        WeatherAPI.getTemperature(data, (res) => {
+            $temperature.html(res['temperature'] || 0);
+            FControl.show($temperature);
+        });
     }
 
     // Event binding
-    $countrySelect.change(countrySelectProcessing)
-    $stateSelect.change(stateSelectProcessing)
+    $selects['countries'].change(e => LocationAPI.getCountryLocationData(e.target.value, locationDataPrepare));
+    $selects['states'].change(e => LocationAPI.getStateLocationData(e.target.value, locationDataPrepare));
+    $selects['cities'].change(e => getTemperature($(e.target).find(':selected').data('location')));
+    $('select').change(e => $(e.target).parent('div').nextAll().hide());
 });
 

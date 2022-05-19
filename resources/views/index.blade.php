@@ -6,18 +6,23 @@
                 <h2>Weather</h2>
                 <div class="mt-3">
                     <label>Country:</label>
-                    <select name="country" id="country" class="form-select"></select>
+                    <select name="country" id="country" class="form-select">
+                        @foreach($countries as $country)
+                            <option value="{{ $country->id }}" data-location="{{ $country->location }}"> {{ $country->name }} </option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="mt-3">
+                <div class="mt-3" style="display: none;">
                     <label>State:</label>
                     <select name="state" id="state" class="form-select"></select>
                 </div>
-                <div class="mt-3">
+                <div class="mt-3" style="display: none;">
                     <label>City:</label>
                     <select name="city" id="city" class="form-select"></select>
                 </div>
-                <div class="mt-3">
-                    <button id="submit" type="button" class="btn btn-success">Find out the weather in the selected city</button>
+                <div class="mt-3 p-3 border rounded-2 h-25" style="display: none;">
+                    <b id="temperature"></b>
+                    <span>℃</span>
                 </div>
             </div>
         </div>

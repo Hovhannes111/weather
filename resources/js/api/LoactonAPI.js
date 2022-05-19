@@ -5,38 +5,22 @@ const LocationAPI = {
     onFailure: (err) => {
         console.error(err.message)
     },
-    getCountries: function (onSuccess = this.onSuccess, onFailure = this.onFailure) {
+    getCountryLocationData: function (countryId, onSuccess = this.onSuccess, onFailure = this.onFailure) {
         $.ajax({
             type: 'GET',
-            url: '/countries',
+            url: `/country/${countryId}`,
             success: onSuccess,
             error: onFailure
         })
     },
-    getStates: function (countryId, onSuccess = this.onSuccess, onFailure = this.onFailure) {
+    getStateLocationData: function (stateId, onSuccess = this.onSuccess, onFailure = this.onFailure) {
         $.ajax({
             type: 'GET',
-            url: `/states/${countryId}`,
+            url: `/state/${stateId}`,
             success: onSuccess,
             error: onFailure
         })
     },
-    getStateCities: function (stateId, onSuccess = this.onSuccess, onFailure = this.onFailure) {
-        $.ajax({
-            type: 'GET',
-            url: `/cities/state/${stateId}`,
-            success: onSuccess,
-            error: onFailure
-        })
-    },
-    getCountryCities: function (countryId, onSuccess = this.onSuccess, onFailure = this.onFailure) {
-        $.ajax({
-            type: 'GET',
-            url: `/cities/country/${countryId}`,
-            success: onSuccess,
-            error: onFailure
-        })
-    }
 }
 
 

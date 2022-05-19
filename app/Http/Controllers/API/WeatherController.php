@@ -32,8 +32,11 @@ class WeatherController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
-        $result = [];
-        return response()->json($result);
+//        dd($request->all());
+//        $result = [];
+        return response()->json([
+            'temperature' => 12
+        ]);
     }
 
     /**

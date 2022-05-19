@@ -1,8 +1,8 @@
-const Select = {
-    appendOptions: function ($el, options) {
-        $el.html(this.generateHTML(options));
+const FControl = {
+    appendSelectOptions: function ($el, options) {
+        $el.html(this.getSelectOptionsHTML(options));
     },
-    generateHTML: function (options) {
+    getSelectOptionsHTML: function (options) {
          let html = '<option value="0" data-id="0">Please select your state</option>'
          options.forEach( value =>
             html += `<option value=${value.id} data-location='{"latitude":${value.latitude}, "longitude":${value.longitude}}'>${value.name}</option>`
@@ -17,4 +17,4 @@ const Select = {
     }
 }
 
-export default Select;
+export default FControl;
